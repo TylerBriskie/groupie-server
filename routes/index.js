@@ -26,17 +26,5 @@ router.get('/users/:id', function(req,res,next){
     });
 });
 
-router.post('/newuser', function(req,res,next){
-  return knex('users').insert({
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
-      age: req.body.age
-    }).returning('username')
-      .then(newUser=>{
-        console.log(newUser);
-        res.json(newUser);
-      })
-})
 
 module.exports = router;
