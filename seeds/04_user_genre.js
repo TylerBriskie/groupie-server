@@ -1,6 +1,6 @@
 
 exports.seed = function(knex, Promise) {
-  return knex.raw('DELETE FROM "user_genre"; ALTER SEQUENCE user_genre_id_seq RESTART WITH 8')
+  return knex.raw('DELETE FROM "user_genre"; ALTER SEQUENCE user_genre_id_seq RESTART WITH 10')
     .then(function(){
       const user_genre = [
         {
@@ -38,6 +38,16 @@ exports.seed = function(knex, Promise) {
           user_id: 1,
           genre_id: 8
         },
+        {
+          id: 8,
+          user_id: 5,
+          genre_id: 2
+        },
+        {
+          id: 9,
+          user_id: 5,
+          genre_id: 7
+        }
 
       ];
       return knex('user_genre').insert(user_genre);

@@ -1,7 +1,7 @@
 
 exports.seed = function(knex, Promise) {
   // Deletes ALL existing entries
-  return knex.raw('DELETE FROM "users"; ALTER SEQUENCE users_id_seq RESTART WITH 5')
+  return knex.raw('DELETE FROM "users"; ALTER SEQUENCE users_id_seq RESTART WITH 6')
     .then(function(){
       const users = [
         {
@@ -10,7 +10,7 @@ exports.seed = function(knex, Promise) {
           email: "HeavyMetalMarty@gmail.com",
           password: "password",
           age: 22,
-          bio: "My name is Marty and I love to shred!  Hit me up if you wanna start a metal band"
+          bio: "My name is Marty and I love to shred!  Hit me up if you wanna start a metal band."
         },
         {
           id: 2,
@@ -18,7 +18,7 @@ exports.seed = function(knex, Promise) {
           email: "davedrums@gmail.com",
           password: "password",
           age: 34,
-          bio: "Dave here, I've been drumming since I was 2.  I love funk, jazz, and long walks on the beach"
+          bio: "Dave here, I've been drumming since I was 2.  I love funk, jazz, and long walks on the beach."
         },
         {
           id:3,
@@ -34,8 +34,17 @@ exports.seed = function(knex, Promise) {
           email: "sammyshredder@gmail.com",
           password: "password",
           age: 28,
-          bio: "I'm Sammy, and I used to be in a band called Van Halen.  I play rhythm guitar and sing, and I think I'm pretty good"
-        }
+          bio: "I'm Sammy, and I used to be in a band called Van Halen.  I play rhythm guitar and sing, and I think I'm pretty good."
+        },
+        {
+          id:5,
+          username: "BluegrassBill",
+          email: "bluegrassbill@gmail.com",
+          password: "password",
+          age: 55,
+          bio: "Bill's the name, hot country licks is the game.  I like my chicken fried, my beer cold, and my elected officials republican.  Let's Party!"
+        },
+
       ];
       return knex('users').insert(users);
     });

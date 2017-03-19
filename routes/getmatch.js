@@ -37,9 +37,8 @@ router.get('/random/content', function(req, res, next){
   .innerJoin('user_genre', 'users.id', 'user_genre.user_id')
   .innerJoin('genre', 'genre.id', 'user_genre.genre_id')
   .then(content=>{
-    let x = Math.floor(Math.random() * (content.length-1))
-    console.log(x, "<<x")
     const reformatted = reformatMatches(content)
+    let x = Math.floor(Math.random() * (reformatted.length))
     console.log(reformatted[x])
     res.send(reformatted[x]);
   })

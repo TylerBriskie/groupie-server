@@ -1,7 +1,7 @@
 
 exports.seed = function(knex, Promise) {
   // Deletes ALL existing entries
-  return knex.raw('DELETE FROM "content"; ALTER SEQUENCE content_id_seq RESTART WITH 5')
+  return knex.raw('DELETE FROM "content"; ALTER SEQUENCE content_id_seq RESTART WITH 6')
     .then(function(){
       const content = [
         {
@@ -27,6 +27,12 @@ exports.seed = function(knex, Promise) {
           is_video: true,
           user_id: 4,
           content_url: "https://www.youtube.com/watch?v=2BrLEuzVCVQ#t=0m44s"
+        },
+        {
+          id: 5,
+          is_video: false,
+          user_id: 5,
+          content_url: "https://soundcloud.com/mike-petry-1/sets/classic-country-lead-guitar"
         }
       ];
       return knex('content').insert(content);
