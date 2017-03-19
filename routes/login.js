@@ -15,11 +15,12 @@ var protect = require('../db/encryption.js')
             if(user === undefined) {
               res.status(500).send('Email Not Found!');
             } else {
+              console.log(user)
               protect.decrypt(user.password, profile.session.password).then(result => {
                 console.log(result)
                   if (result === true) {
                     jwt.sign(user, process.env.TOKEN_SECRET, {expiresIn: '1d' }, function(error, token){
-                      console.log(error, token);
+                      console.log(user.id, token);
                       res.send(token);
                     });
                   } else {
@@ -31,7 +32,21 @@ var protect = require('../db/encryption.js')
             }
 
         })
+});
 
+router.get('/profile', function(req, res){
+  console.log(req.body)
+  if(req.user) {
+    return knex('users').where('email', req.user.email)
+      .then(data =>{
+        res.json(data)
+      })
+  } else {
+    res.status(401);
+    res.json({
+      message: "UnAuthorized"
+    });
+  }
 });
 
 module.exports = router
