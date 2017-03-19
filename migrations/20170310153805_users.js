@@ -6,9 +6,10 @@ exports.up = function(knex, Promise) {
     table.text('password').notNullable();
     table.text('username').notNullable();
     table.integer('age');
-    table.integer('lat').notNullable();
-    table.integer('long').notNullable();
-  })
+    table.integer('lat');
+    table.integer('long');
+    table.text('bio');
+  });
 };
 
 exports.down = function(knex, Promise) {

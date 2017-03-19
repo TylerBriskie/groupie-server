@@ -1,6 +1,6 @@
 
 exports.seed = function(knex, Promise) {
-  return knex.raw('DELETE FROM "genre"; ALTER SEQUENCE genre_id_seq RESTART WITH 11')
+  return knex.raw('DELETE FROM "genre"; ALTER SEQUENCE genre_id_seq RESTART WITH 13')
     .then(function(){
       const genre = [
         {
@@ -42,6 +42,14 @@ exports.seed = function(knex, Promise) {
         {
           id: 10,
           name: "Hip-Hop"
+        },
+        {
+          id: 11,
+          name: "Hard Rock"
+        },
+        {
+          id: 12,
+          name: 'EDM'
         }
       ];
       return knex('genre').insert(genre);
