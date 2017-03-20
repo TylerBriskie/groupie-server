@@ -1,6 +1,6 @@
 
 exports.seed = function(knex, Promise) {
-  return knex.raw('DELETE FROM "instrument"; ALTER SEQUENCE instrument_id_seq RESTART WITH 11')
+  return knex.raw('DELETE FROM "instrument"; ALTER SEQUENCE instrument_id_seq RESTART WITH 12')
     .then(function(){
       const instruments = [
         {
@@ -42,6 +42,10 @@ exports.seed = function(knex, Promise) {
         {
           id: 10,
           name: "Percussion"
+        },
+        {
+          id:11,
+          name: "Fiddle"
         }
       ];
       return knex('instrument').insert(instruments);

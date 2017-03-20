@@ -18,6 +18,7 @@ function reformatMatches(data){
         username: user.username,
         user_id: user.user_id,
         age: user.age,
+        instrument: user.instrument,
         video: user.is_video,
         bio: user.bio,
         content: user.content_url,
@@ -32,14 +33,16 @@ function reformatMatches(data){
 
 router.get('/random/content', function(req, res, next){
   knex.from('content')
-  .select('content.id as content_id', 'content.user_id', 'content.is_video', 'content.content_url', 'users.id as userID', 'users.bio','users.username', 'users.age', 'genre.id as genre_id','genre.name as genre_name')
+  .select('content.id as content_id', 'content.user_id', 'content.is_video', 'content.content_url', 'users.id as userID', 'users.bio','users.username', 'users.age', 'genre.id as genre_id','instrument.name as instrument','genre.name as genre_name')
   .innerJoin('users', 'users.id', 'content.user_id')
   .innerJoin('user_genre', 'users.id', 'user_genre.user_id')
   .innerJoin('genre', 'genre.id', 'user_genre.genre_id')
+  .innerJoin('user_instrument', 'users.id', 'user_instrument.user_id')
+  .innerJoin('instrument', 'instrument.id', 'user_instrument.instrument_id')
   .then(content=>{
     const reformatted = reformatMatches(content)
     let x = Math.floor(Math.random() * (reformatted.length))
-    console.log(reformatted[x])
+    console.log(reformatted)
     res.send(reformatted[x]);
   })
 })

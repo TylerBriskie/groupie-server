@@ -1,5 +1,8 @@
 var express = require('express');
 var router = express.Router();
+var dotenv = require('dotenv').config();
+var jwt = require('jsonwebtoken');
+var knex = require('../db/knex.js');
 var profile = require('../db/profile.js');
 var protect = require('../db/encryption.js')
 
@@ -18,12 +21,7 @@ router.post('/', (req, res, next) => {
                                 password: data
                             };
                             profile.storeNewProfile(newProfile).then(id => {
-                              const isSecure = req.app.get('env'!= 'development')
-                              res.cookie('user_id', id, {
-                                httpOnly: true,
-                                signed: true,
-                                secure: isSecure
-                              });
+                              res.status(200).send('profile created')
                             })
                         });
                 } else {

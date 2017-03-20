@@ -11,6 +11,7 @@ var users = require('./routes/users');
 var signup = require('./routes/signup');
 var login = require('./routes/login');
 var getMatch = require('./routes/getmatch');
+var myprofile = require('./routes/myprofile');
 
 var app = express();
 
@@ -63,6 +64,7 @@ app.use(function(req, res, next) {
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/myprofile', myprofile);
 app.use('/signup', signup);
 app.use('/login', login);
 app.use('/getmatch', getMatch);

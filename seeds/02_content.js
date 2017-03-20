@@ -8,7 +8,7 @@ exports.seed = function(knex, Promise) {
           id: 1,
           is_video: true,
           user_id: 1,
-          content_url: "https://www.youtube.com/watch?v=gPibbNqCh1w#t=0m05s"
+          content_url: "https://www.youtube.com/embed/gPibbNqCh1w#t=0m05s"
         },
         {
           id: 2,
@@ -20,19 +20,19 @@ exports.seed = function(knex, Promise) {
           id: 3,
           is_video: true,
           user_id: 3,
-          content_url: "https://www.youtube.com/watch?v=DjpudvU-ZRA#t=0m03s"
+          content_url: "https://www.youtube.com/embed/DjpudvU-ZRA#t=0m03s"
         },
         {
           id: 4,
           is_video: true,
           user_id: 4,
-          content_url: "https://www.youtube.com/watch?v=2BrLEuzVCVQ#t=0m44s"
+          content_url: "https://www.youtube.com/embed/2BrLEuzVCVQ#t=0m44s"
         },
         {
           id: 5,
           is_video: false,
           user_id: 5,
-          content_url: "https://soundcloud.com/mike-petry-1/sets/classic-country-lead-guitar"
+          content_url: "https://soundcloud.com/goose-creek-symphony/fiddle-solo-fred-live"
         }
       ];
       return knex('content').insert(content);

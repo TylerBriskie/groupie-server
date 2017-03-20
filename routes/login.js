@@ -15,12 +15,13 @@ var protect = require('../db/encryption.js')
             if(user === undefined) {
               res.status(500).send('Email Not Found!');
             } else {
-              console.log(user)
+              console.log("line 18, loging user from knex query >>",user)
               protect.decrypt(user.password, profile.session.password).then(result => {
                 console.log(result)
                   if (result === true) {
                     jwt.sign(user, process.env.TOKEN_SECRET, {expiresIn: '1d' }, function(error, token){
-                      console.log(user.id, token);
+
+                      console.log(token);
                       res.send(token);
                     });
                   } else {
