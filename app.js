@@ -12,6 +12,8 @@ var signup = require('./routes/signup');
 var login = require('./routes/login');
 var getMatch = require('./routes/getmatch');
 var myprofile = require('./routes/myprofile');
+var genre = require('./routes/genre');
+
 
 var app = express();
 
@@ -68,6 +70,7 @@ app.use('/myprofile', myprofile);
 app.use('/signup', signup);
 app.use('/login', login);
 app.use('/getmatch', getMatch);
+app.use('/genre', genre);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
