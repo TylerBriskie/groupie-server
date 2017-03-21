@@ -18,6 +18,7 @@ var protect = require('../db/encryption.js')
 //     //     });
 // });
 //
+
 function reformatMatches(data){
   const reformatted = [];
   const usersById = {};
@@ -71,20 +72,25 @@ router.get('/', function(req, res) {
     }
 });
 
-router.post('/update', function(req,res,next){
-  console.log("updating profile")
-  console.log(req.user.id)
-  return knex('users').where('id', req.user.id).first().update({
-    bio: req.body.bio
-  }).then(()=>{
-    return knex('content').where('content.user_id', req.user.id).first().update({
-      content_url: req.body.content_url
-    }).then(()=>{
-
-    })
+router.post('/updateContent', function(req,res,next){
+  console.log("updating content for profile ", req.user.id)
+  console.log(req.body.content_url)
+  return knex('content').where('user_id', req.user.id).first().update({
+    content_url: req.body.content_url
+  }).then(data=>{
+    console.log(data);
+  })
   })
 
-})
+  router.post('/updateBio', function(req,res,next){
+    console.log("updating Bio for profile ", req.user.id)
+    console.log(req.body.bio)
+    return knex('users').where('id', req.user.id).first().update({
+      bio: req.body.bio
+    }).then(data=>{
+      console.log(data);
+    })
+    })
 
 // router.get('/profile', function(req, res){
 //   if(req.user) {
