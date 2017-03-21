@@ -6,47 +6,47 @@ exports.seed = function(knex, Promise) {
         {
           id: 1,
           user_id: 1,
-          genre_id: 1
+          genre_name:"Metal"
         },
         {
           id: 2,
           user_id: 2,
-          genre_id: 6
+          genre_name:"Funk"
         },
         {
           id: 3,
           user_id: 2,
-          genre_id: 5
+          genre_name: "Jazz"
         },
         {
           id: 4,
           user_id: 3,
-          genre_id: 6
+          genre_name: "Funk"
         },
         {
           id: 5,
           user_id: 4,
-          genre_id: 1
+          genre_name: "Metal"
         },
         {
           id: 6,
           user_id: 4,
-          genre_id: 11
+          genre_name: "Hard Rock"
         },
         {
           id: 7,
           user_id: 1,
-          genre_id: 8
+          genre_name: "Punk"
         },
         {
           id: 8,
           user_id: 5,
-          genre_id: 2
+          genre_name: "Country"
         },
         {
           id: 9,
           user_id: 5,
-          genre_id: 7
+          genre_name: "Acoustic"
         }
 
       ];

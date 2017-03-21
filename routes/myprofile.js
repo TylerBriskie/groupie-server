@@ -45,13 +45,13 @@ function reformatMatches(data){
 router.get('/', function(req, res) {
     if (req.user) {
       knex.from('content')
-      .select('content.id as content_id', 'content.user_id', 'content.is_video', 'content.content_url', 'users.id as userID', 'users.bio','users.username', 'users.age', 'genre.id as genre_id','instrument.name as instrument','genre.name as genre_name')
+      .select('content.id as content_id', 'user_genre.genre_name as genre_name', 'content.user_id', 'content.is_video', 'content.content_url', 'users.id as userID', 'users.bio','users.username', 'users.age','instrument.name as instrument')
       .where('users.id', req.user.id)
       .innerJoin('users', 'users.id', 'content.user_id')
       .innerJoin('user_genre', 'users.id', 'user_genre.user_id')
-      .innerJoin('genre', 'genre.id', 'user_genre.genre_id')
+      // .innerJoin('genre', 'genre.id', 'user_genre.genre_id')
       .innerJoin('user_instrument', 'users.id', 'user_instrument.user_id')
-      .innerJoin('instrument', 'instrument.id', 'user_instrument.instrument_id')
+      // .innerJoin('instrument', 'instrument.id', 'user_instrument.instrument_id')
       .then(content=>{
         console.log("content from join:", content)
         if (content.length>1){
@@ -72,15 +72,15 @@ router.get('/', function(req, res) {
     }
 });
 
-router.post('/updateContent', function(req,res,next){
-  console.log("updating content for profile ", req.user.id)
-  console.log(req.body.content_url)
-  return knex('content').where('user_id', req.user.id).first().update({
-    content_url: req.body.content_url
-  }).then(data=>{
-    console.log(data);
-  })
-  })
+  router.post('/updateContent', function(req,res,next){
+    console.log("updating content for profile ", req.user.id)
+    console.log(req.body.content_url)
+    return knex('content').where('user_id', req.user.id).first().update({
+      content_url: req.body.content_url
+    }).then(data=>{
+      console.log(data);
+    })
+    })
 
   router.post('/updateBio', function(req,res,next){
     console.log("updating Bio for profile ", req.user.id)
@@ -92,19 +92,15 @@ router.post('/updateContent', function(req,res,next){
     })
     })
 
-// router.get('/profile', function(req, res){
-//   if(req.user) {
-//     return knex('users').where('email', req.user.email)
-//       .then(data =>{
-//         res.json(data)
-//       })
-//   } else {
-//     res.status(401);
-//     res.json({
-//       message: "UnAuthorized"
-//     });
-//   }
-// });
+  router.post('/addGenre', function(req, res, next){
+    console.log('adding genre for user ', req.user.id)
+    return knex('user_genre').insert({
+      user_id: req.user.id,
+      genre_name: req.body.genre
+    }).then(data=>{
+      console.log(data)
+    })
+  })
 
 
 module.exports = router

@@ -33,10 +33,10 @@ function reformatMatches(data){
 
 router.get('/random/content', function(req, res, next){
   knex.from('content')
-  .select('content.id as content_id', 'content.user_id', 'content.is_video', 'content.content_url', 'users.id as userID', 'users.bio','users.username', 'users.age', 'genre.id as genre_id','instrument.name as instrument','genre.name as genre_name')
+  .select('content.id as content_id', 'content.user_id', 'content.is_video', 'content.content_url', 'users.id as userID', 'users.bio','users.username', 'users.age', 'user_genre.genre_name as genre_name','instrument.name as instrument')
   .innerJoin('users', 'users.id', 'content.user_id')
   .innerJoin('user_genre', 'users.id', 'user_genre.user_id')
-  .innerJoin('genre', 'genre.id', 'user_genre.genre_id')
+  // .innerJoin('genre', 'genre.id', 'user_genre.genre_id')
   .innerJoin('user_instrument', 'users.id', 'user_instrument.user_id')
   .innerJoin('instrument', 'instrument.id', 'user_instrument.instrument_id')
   .then(content=>{
