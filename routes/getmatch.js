@@ -32,17 +32,17 @@ function reformatMatches(data){
 
 
 router.get('/random/content', function(req, res, next){
-  knex.from('content')
+  console.log(req.user.id)
+  knex.from('users')
+  .whereNot('users.id', req.user.id)
   .select('content.id as content_id', 'content.user_id', 'content.is_video', 'content.content_url', 'users.id as userID', 'users.bio','users.username', 'users.age', 'user_genre.genre_name as genre_name','users.instrument as instrument')
-  .innerJoin('users', 'users.id', 'content.user_id')
+  .leftJoin('content', 'users.id', 'content.user_id')
   .innerJoin('user_genre', 'users.id', 'user_genre.user_id')
-  // .innerJoin('genre', 'genre.id', 'user_genre.genre_id')
-  .innerJoin('user_instrument', 'users.id', 'user_instrument.user_id')
-  // .innerJoin('instrument', 'instrument.id', 'user_instrument.instrument_id')
   .then(content=>{
+    console.log(content);
     const reformatted = reformatMatches(content)
     let x = Math.floor(Math.random() * (reformatted.length))
-    console.log(reformatted)
+    console.log(reformatted[x])
     res.send(reformatted[x]);
   })
 })
@@ -52,6 +52,7 @@ router.get('/random/content', function(req, res, next){
 
 router.post('/:user_id/reject/:match_id', function(req, res, next){
   console.log('swiped left')
+  return knex('user_rejection')
 })
 
 // Swipe Right

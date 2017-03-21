@@ -22,6 +22,7 @@ var protect = require('../db/encryption.js')
 function reformatMatches(data){
   const reformatted = [];
   const usersById = {};
+  console.log("reformatting data: ", data);
   data.forEach(user => {
     if (usersById[user.user_id]){
       usersById[user.user_id].genres.push(user.genre_name)
@@ -44,14 +45,11 @@ function reformatMatches(data){
 
 router.get('/', function(req, res) {
     if (req.user) {
-      knex.from('content')
-      .select('content.id as content_id', 'user_genre.genre_name as genre_name', 'content.user_id', 'content.is_video', 'content.content_url', 'users.id as userID', 'users.bio','users.username', 'users.age','users.instrument as instrument')
+      knex.from('users')
+      .select('content.id as content_id', 'user_genre.genre_name as genre_name', 'content.user_id', 'content.content_url', 'users.id as userID', 'users.bio','users.username', 'users.age','users.instrument as instrument')
       .where('users.id', req.user.id)
-      .innerJoin('users', 'users.id', 'content.user_id')
-      .innerJoin('user_genre', 'users.id', 'user_genre.user_id')
-      // .innerJoin('genre', 'genre.id', 'user_genre.genre_id')
-      // .innerJoin('user_instrument', 'users.id', 'user_instrument.user_id')
-      // .innerJoin('instrument', 'instrument.id', 'user_instrument.instrument_id')
+      .leftJoin('content', 'users.id', 'content.user_id')
+      .leftJoin('user_genre', 'users.id', 'user_genre.user_id')
       .then(content=>{
         console.log("content from join:", content)
         if (content.length>1){
@@ -59,12 +57,10 @@ router.get('/', function(req, res) {
           console.log("Reformatted: ", reformatted)
           res.send(reformatted[0]);
         } else {
-          console.log("content: ", content)
-            res.send(content);
+          console.log("content: ", content[0])
+            res.send(content[0]);
         }
       })
-      // console.log("User found: ", req.user)
-      //   res.json(req.user)
     } else {
         res.status(401);
         res.json({
@@ -76,7 +72,8 @@ router.get('/', function(req, res) {
   router.post('/updateContent', function(req,res,next){
     console.log("updating content for profile ", req.user.id)
     console.log(req.body.content_url)
-    return knex('content').where('user_id', req.user.id).first().update({
+    return knex('content').where('user_id', req.user.id).insert({
+      user_id: req.user.id,
       content_url: req.body.content_url
     }).then(data=>{
       console.log(data);
@@ -107,10 +104,20 @@ router.get('/', function(req, res) {
     console.log(`updating user ${req.user.id}'s instrument to: ${req.body.instrument}`)
     return knex('users').where('id', req.user.id).first().update({
       instrument: req.body.instrument
-    }).then(()=>{
-
+    }).then((result)=>{
+      console.log(result)
     })
 
+  })
+
+  router.delete('/removeGenre', function(req,res,next){
+    console.log('removing genre')
+    return knex('user_genre').where('user_id', req.user.id).del().then(genres=>{console.log(genres)})
+  })
+
+  router.delete('/deleteProfile', function(req,res,next){
+    console.log('Account Deleted')
+    return knex('users').where('id', req.user.id).del().then(result=>{console.log(result)})
   })
 
 

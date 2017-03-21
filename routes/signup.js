@@ -10,8 +10,8 @@ router.post('/', (req, res, next) => {
     console.log(req.body)
     if (validUser(req.body)) {
         profile.checkIfProfileExists(req.body)
-            .then((result) => {
-                if (result === undefined) {
+            .then((user) => {
+                if (user === undefined) {
                     req.body.password = protect.encrypt(req.body.password)
                         .then((data) => {
                             console.log(data)
@@ -22,7 +22,11 @@ router.post('/', (req, res, next) => {
                                 password: data
                             };
                             profile.storeNewProfile(newProfile).then(id => {
-                              res.status(200).send('profile created')
+                              jwt.sign(user, process.env.TOKEN_SECRET, {expiresIn: '7d' }, function(error, token){
+
+                                console.log(token);
+                                res.send(token);
+                              });
                             })
                         });
                 } else {

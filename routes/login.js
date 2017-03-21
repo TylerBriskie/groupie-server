@@ -19,7 +19,7 @@ var protect = require('../db/encryption.js')
               protect.decrypt(user.password, profile.session.password).then(result => {
                 console.log(result)
                   if (result === true) {
-                    jwt.sign(user, process.env.TOKEN_SECRET, {expiresIn: '1d' }, function(error, token){
+                    jwt.sign(user, process.env.TOKEN_SECRET, {expiresIn: '7d' }, function(error, token){
 
                       console.log(token);
                       res.send(token);
