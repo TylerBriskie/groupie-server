@@ -10,7 +10,8 @@ module.exports = {
     return knex.insert({
       email: newProfile.email,
       password: newProfile.password,
-      username: newProfile.username
+      username: newProfile.username,
+      instrument: newProfile.instrument
     }).into('users').returning('id').then((id)=>{return id;});
   }
 

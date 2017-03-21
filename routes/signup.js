@@ -18,6 +18,7 @@ router.post('/', (req, res, next) => {
                             const newProfile = {
                                 username: req.body.username,
                                 email: req.body.email,
+                                instrument: req.body.instrument,
                                 password: data
                             };
                             profile.storeNewProfile(newProfile).then(id => {

@@ -45,12 +45,12 @@ function reformatMatches(data){
 router.get('/', function(req, res) {
     if (req.user) {
       knex.from('content')
-      .select('content.id as content_id', 'user_genre.genre_name as genre_name', 'content.user_id', 'content.is_video', 'content.content_url', 'users.id as userID', 'users.bio','users.username', 'users.age','instrument.name as instrument')
+      .select('content.id as content_id', 'user_genre.genre_name as genre_name', 'content.user_id', 'content.is_video', 'content.content_url', 'users.id as userID', 'users.bio','users.username', 'users.age','users.instrument as instrument')
       .where('users.id', req.user.id)
       .innerJoin('users', 'users.id', 'content.user_id')
       .innerJoin('user_genre', 'users.id', 'user_genre.user_id')
       // .innerJoin('genre', 'genre.id', 'user_genre.genre_id')
-      .innerJoin('user_instrument', 'users.id', 'user_instrument.user_id')
+      // .innerJoin('user_instrument', 'users.id', 'user_instrument.user_id')
       // .innerJoin('instrument', 'instrument.id', 'user_instrument.instrument_id')
       .then(content=>{
         console.log("content from join:", content)
@@ -59,6 +59,7 @@ router.get('/', function(req, res) {
           console.log("Reformatted: ", reformatted)
           res.send(reformatted[0]);
         } else {
+          console.log("content: ", content)
             res.send(content);
         }
       })
@@ -100,6 +101,16 @@ router.get('/', function(req, res) {
     }).then(data=>{
       console.log(data)
     })
+  })
+
+  router.post('/updateInstrument', function(req, res, next){
+    console.log(`updating user ${req.user.id}'s instrument to: ${req.body.instrument}`)
+    return knex('users').where('id', req.user.id).first().update({
+      instrument: req.body.instrument
+    }).then(()=>{
+
+    })
+
   })
 
 
