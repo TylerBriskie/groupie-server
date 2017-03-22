@@ -22,6 +22,7 @@ function reformatMatches(data){
         instrument: user.instrument,
         video: user.is_video,
         bio: user.bio,
+        email: user.email,
         content: user.content_url,
         genres: [user.genre_name]
       };
@@ -61,31 +62,60 @@ router.get('/random/content', function(req,res,next){
   knex.from('user_genre')
   .select('user_genre.genre_name as genre')
   .where('user_genre.user_id', req.user.id)
-  .then(result=>{
-    for(var i=0; i<result.length; i++){
-      myGenres.push(result[i].genre)
+  .then(genres=>{
+    for(var i=0; i<genres.length; i++){
+      myGenres.push(genres[i].genre)
     }
-    knex.from('users')
-      .select('content.id as content_id', 'content.user_id',
-      'content.is_video', 'content.content_url', 'users.id as userID',
-      'users.bio','users.username', 'users.age', 'user_genre.genre_name as genre_name',
-      'users.instrument as instrument')
-      .leftJoin('content', 'users.id', 'content.user_id')
-      .innerJoin('user_genre', 'users.id', 'user_genre.user_id')
-      .whereIn('genre_name', myGenres)
-      .whereNot('users.id', req.user.id)
-      .then(content=>{
+    knex.from('user_connection')
+    .select('user_connection.connectee as connectee')
+    .where('user_connection.connector', req.user.id)
+    .then((winners)=>{
+      if (winners){
+        // console.log("winners:", winners)
+        for(var j=0; j<winners.length; j++){
+          myConnections.push(winners[j].connectee)
+        }
+      }
+      // console.log("myconnections:", myConnections)
+      knex.from('user_rejection')
+      .select('user_rejection.rejectee as rejectee')
+      .where('user_rejection.rejector', req.user.id)
 
-        console.log("content: ",content);
-        const reformatted = reformatMatches(content)
-        let x = Math.floor(Math.random() * (reformatted.length))
-        console.log("reformatted:", reformatted[x])
-        return reformatted[x];
-      }).then(random=>{
-        console.log("sending: ", random)
-        randomMatch = random
-        res.send(randomMatch);
-      })
+    .then((losers)=>{
+      // console.log("losers: ", losers)
+      if (losers){
+        for(var x=0; x<losers.length; x++){
+          myConnections.push(losers[x].rejectee)
+        }
+      }
+      console.log("myconnections:", myConnections);
+      knex.from('users')
+        .select('content.id as content_id', 'content.user_id',
+        'content.is_video', 'content.content_url', 'users.id as userID',
+        'users.bio','users.username', 'users.email as email','users.age', 'user_genre.genre_name as genre_name',
+        'users.instrument as instrument')
+        .leftJoin('content', 'users.id', 'content.user_id')
+        // .leftJoin('user_connection', 'user_connection.connector', req.user.id)
+        // .leftJoin('user_rejection', 'user_rejection.rejector', req.user.id)
+        .innerJoin('user_genre', 'users.id', 'user_genre.user_id')
+        // .whereIn('genre_name', myGenres)
+        .whereNot('users.id', req.user.id)
+        .whereNotIn('users.id', myConnections)
+        // .whereNotIn('rejectee', myConnections)
+        .then(content=>{
+
+          // console.log("content: ",content);
+          const reformatted = reformatMatches(content)
+          let x = Math.floor(Math.random() * (reformatted.length))
+          // console.log("reformatted:", reformatted[x])
+          return reformatted[x];
+        }).then(random=>{
+          console.log("sending: ", random)
+          randomMatch = random
+          res.send(randomMatch);
+        })
+    })
+    })
   })
 })
 
@@ -110,8 +140,20 @@ router.post('/accept/:match_id', function(req, res, next){
     connector: req.user.id,
     connectee: req.params.match_id
   })
-  .then(()=>{
-    console.log('connection made...')
+  .then((result)=>{
+    console.log("result of connection:", result)
+    return knex('user_connection')
+    .where('connectee', req.user.id)
+    .andWhere('connector', req.params.match_id)
+    .then((isConnected)=>{
+      if (isConnected.length>0){
+        console.log("connection made!")
+        res.send('CONNECTION MADE')
+      } else {
+        console.log("no mutual connection...YET!")
+      }
+
+    })
   })
 })
 

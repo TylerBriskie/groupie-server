@@ -22,9 +22,12 @@ router.post('/', (req, res, next) => {
                                 password: data
                             };
                             profile.storeNewProfile(newProfile).then(id => {
-                              jwt.sign(user, process.env.TOKEN_SECRET, {expiresIn: '7d' }, function(error, token){
+                              newProfile.id = id[0];
+                              console.log(id)
+                              delete newProfile.password;
+                              jwt.sign(newProfile, process.env.TOKEN_SECRET, {expiresIn: '7d' }, function(error, token){
 
-                                console.log(token);
+                                console.log("Signin, returning token:", token);
                                 res.send(token);
                               });
                             })
