@@ -110,9 +110,18 @@ router.get('/random/content', function(req,res,next){
           // console.log("reformatted:", reformatted[x])
           return reformatted[x];
         }).then(random=>{
-          console.log("sending: ", random)
-          randomMatch = random
-          res.send(randomMatch);
+          if (random != undefined){
+            console.log("sending: ", random)
+            randomMatch = random
+            res.json(randomMatch);
+          } else {
+            console.log("no users found")
+            res.status(301)
+            res.json({
+              error: "No Users Found... :(",
+
+            })
+          }
         })
     })
     })
@@ -148,7 +157,7 @@ router.post('/accept/:match_id', function(req, res, next){
     .then((isConnected)=>{
       if (isConnected.length>0){
         console.log("connection made!")
-        res.send('CONNECTION MADE')
+        res.json('CONNECTION MADE')
       } else {
         console.log("no mutual connection...YET!")
       }
