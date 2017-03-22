@@ -6,8 +6,8 @@ exports.seed = function(knex, Promise) {
       const rejection = [
         {
           id: 1,
-          user_1: 2,
-          user_2: 1
+          rejector: 2,
+          rejectee: 1
         }
       ];
       return knex('user_rejection').insert(rejection);

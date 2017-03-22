@@ -5,8 +5,8 @@ exports.seed = function(knex, Promise) {
       const connection = [
         {
           id: 1,
-          user_1: 1,
-          user_2: 2
+          connector: 1,
+          connectee: 2
         }
       ];
       return knex('user_connection').insert(connection);
