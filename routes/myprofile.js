@@ -48,8 +48,8 @@ router.get('/', function(req, res) {
       knex.from('users')
       .select('content.id as content_id', 'user_genre.genre_name as genre_name', 'content.user_id', 'content.content_url', 'users.id as userID', 'users.bio','users.username', 'users.age','users.instrument as instrument')
       .where('users.id', req.user.id)
-      .leftJoin('content', 'users.id', 'content.user_id')
-      .leftJoin('user_genre', 'users.id', 'user_genre.user_id')
+      .innerJoin('content', 'users.id', 'content.user_id')
+      .innerJoin('user_genre', 'users.id', 'user_genre.user_id')
       .then(content=>{
         console.log("content from join:", content)
         if (content.length>1){
@@ -76,7 +76,7 @@ router.get('/', function(req, res) {
       user_id: req.user.id,
       content_url: req.body.content_url
     }).then(data=>{
-      console.log(data);
+      console.log("update content data:", data);
     })
     })
 
@@ -86,7 +86,7 @@ router.get('/', function(req, res) {
     return knex('users').where('id', req.user.id).first().update({
       bio: req.body.bio
     }).then(data=>{
-      console.log(data);
+      console.log("update bio data:", data);
     })
     })
 
@@ -96,7 +96,7 @@ router.get('/', function(req, res) {
       user_id: req.user.id,
       genre_name: req.body.genre
     }).then(data=>{
-      console.log(data)
+      console.log("update genre data:", data)
     })
   })
 
