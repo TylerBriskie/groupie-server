@@ -73,6 +73,7 @@ router.get('/', function(req, res) {
     console.log("updating content for profile ", req.user.id)
     console.log(req.body.content_url)
     return knex('content').where('user_id', req.user.id).insert({
+      user_id: req.user.id,
       content_url: req.body.content_url
     }).then(data=>{
       console.log(data);
@@ -92,6 +93,7 @@ router.get('/', function(req, res) {
   router.post('/addGenre', function(req, res, next){
     console.log('adding genre for user ', req.user.id)
     return knex('user_genre').insert({
+      user_id: req.user.id,
       genre_name: req.body.genre
     }).then(data=>{
       console.log(data)
