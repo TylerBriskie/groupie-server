@@ -138,6 +138,7 @@ router.post('/reject/:match_id', function(req, res, next){
     rejectee: req.params.match_id
   })
   .then(()=>{
+    res.json({message: 'rejected'})
     console.log('user rejected')
   })
 })
@@ -157,9 +158,9 @@ router.post('/accept/:match_id', function(req, res, next){
     .then((isConnected)=>{
       if (isConnected.length>0){
         console.log("connection made!")
-        res.json('CONNECTION MADE')
+        res.status(202).send('connection made')
       } else {
-        console.log("no mutual connection...YET!")
+        res.status(206).send('no connection yet')
       }
 
     })
