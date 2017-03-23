@@ -34,7 +34,7 @@ function reformatMatches(data){
         instrument: user.instrument,
         video: user.is_video,
         bio: user.bio,
-        content: user.content_url,
+        content_url: user.content_url,
         genres: [user.genre_name]
       };
       reformatted.push(usersById[user.user_id])
@@ -48,8 +48,8 @@ router.get('/', function(req, res) {
       knex.from('users')
       .select('content.id as content_id', 'user_genre.genre_name as genre_name', 'content.user_id', 'content.content_url', 'users.id as userID', 'users.bio','users.username', 'users.age','users.instrument as instrument')
       .where('users.id', req.user.id)
-      .innerJoin('content', 'users.id', 'content.user_id')
-      .innerJoin('user_genre', 'users.id', 'user_genre.user_id')
+      .leftJoin('content', 'users.id', 'content.user_id')
+      .leftJoin('user_genre', 'users.id', 'user_genre.user_id')
       .then(content=>{
         console.log("content from join:", content)
         if (content.length>1){
@@ -91,12 +91,21 @@ router.get('/', function(req, res) {
     })
 
   router.post('/addGenre', function(req, res, next){
-    console.log('adding genre for user ', req.user.id)
-    return knex('user_genre').insert({
-      user_id: req.user.id,
-      genre_name: req.body.genre
-    }).then(data=>{
-      console.log("update genre data:", data)
+    let myNewGenres = req.body.genre.split(", ")
+    let myPromises = [];
+    console.log("My New genres:", myNewGenres)
+    console.log('how many?', myNewGenres.length)
+    for (var i=0; i<myNewGenres.length; i++){
+      myPromises.push(
+        knex('user_genre').insert({
+          user_id: req.user.id,
+          genre_name: myNewGenres[i]
+        })
+      )
+    }
+    console.log("all my promises:", myPromises)
+    Promise.all(myPromises).then((whahappen)=>{
+      console.log("promise.all: ", whahappen)
     })
   })
 
