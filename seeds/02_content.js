@@ -26,7 +26,7 @@ exports.seed = function(knex, Promise) {
           id: 4,
           is_video: true,
           user_id: 4,
-          content_url: "https://www.youtube.com/embed/2BrLEuzVCVQ#t=0m44s"
+          content_url: "https://www.youtube.com/watch?v=RvV3nn_de2k"
         },
         {
           id: 5,
