@@ -85,7 +85,7 @@ router.get('/random/content', function(req, res, next) {
                                         'content.is_video', 'content.content_url', 'users.id as userID',
                                         'users.bio', 'users.username', 'users.email as email', 'users.age', 'user_genre.genre_name as genre_name',
                                         'users.instrument as instrument')
-                                    .leftJoin('content', 'users.id', 'content.user_id')
+                                    .innerJoin('content', 'users.id', 'content.user_id')
 
                                 // .leftJoin('user_connection', 'user_connection.connector', req.user.id)
                                 // .leftJoin('user_rejection', 'user_rejection.rejector', req.user.id)
