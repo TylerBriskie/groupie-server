@@ -169,6 +169,9 @@ router.get('/', function(req, res) {
       instrument: req.body.instrument
     }).then((result)=>{
       console.log(result)
+    }).catch(err=>{
+      console.log("Error: ", err)
+      throw err
     })
 
   })
