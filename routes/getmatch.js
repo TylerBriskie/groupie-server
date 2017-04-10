@@ -5,17 +5,45 @@ const dotenv = require('dotenv').config();
 
 var app = express();
 
+let myLocation = {
+  lat: 0,
+  long: 0
+}
 
 // return random content and user for potential match
+
+
+function getDistanceToMatch(lat1,lon1,lat2,lon2) {
+
+  console.log("calculating distance between: ",lat1, ', ', lon1, ' and ', lat2, ', ', lon2)
+  var R = 6371; // Radius of the earth in km
+  console.log("long 2 - long 1: ", lon2-lon1)
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1);
+  var a =
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ;
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
+
+
 
 function reformatMatches(data) {
     const reformatted = [];
     const usersById = {};
-
     data.forEach(user => {
         if (usersById[user.user_id]) {
             usersById[user.user_id].genres.push(user.genre_name)
         } else {
+          getDistanceToMatch(user.matchLat, user.matchLong, myLocation.lat, myLocation.long)
             usersById[user.user_id] = {
                 username: user.username,
                 user_id: user.user_id,
@@ -25,6 +53,7 @@ function reformatMatches(data) {
                 bio: user.bio,
                 email: user.email,
                 content: user.content_url,
+                distance: getDistanceToMatch(user.matchLat, user.matchLong, myLocation.lat, myLocation.long),
                 genres: [user.genre_name]
             };
             reformatted.push(usersById[user.user_id])
@@ -34,11 +63,11 @@ function reformatMatches(data) {
 }
 
 router.get('/random/content', function(req, res, next) {
-    // console.log("req.body: ", req.body)
     let myConnections = [];
     let myGenres = [];
     let myInstrumentFilters = [];
     let randomMatch = {};
+
     knex.from('filter_instrument')
         .select('filter_instrument.instrument as instrument')
         .where('filter_instrument.user_id', req.user.id)
@@ -48,6 +77,15 @@ router.get('/random/content', function(req, res, next) {
                     myInstrumentFilters.push(instruments[a].instrument)
                 }
             }
+            knex.from('users')
+                .select('users.lat', 'users.long')
+                .where('users.id', req.user.id).first()
+                .then(location =>{
+                  console.log('location? : ', location)
+                  myLocation.lat = location.lat;
+                  myLocation.long = location.long
+                  console.log(myLocation)
+
             knex.from('user_genre')
                 .select('user_genre.genre_name as genre')
                 .where('user_genre.user_id', req.user.id)
@@ -83,7 +121,7 @@ router.get('/random/content', function(req, res, next) {
                                 var myQuery = knex.from('users')
                                     .select('content.id as content_id', 'content.user_id',
                                         'content.is_video', 'content.content_url', 'users.id as userID',
-                                        'users.bio', 'users.username', 'users.email as email', 'users.age', 'user_genre.genre_name as genre_name',
+                                        'users.bio', 'users.username', 'users.email as email', 'users.age', 'users.lat as matchLat', 'users.long as matchLong', 'user_genre.genre_name as genre_name',
                                         'users.instrument as instrument')
                                     .innerJoin('content', 'users.id', 'content.user_id')
 
@@ -131,6 +169,7 @@ router.get('/random/content', function(req, res, next) {
                                     }
                                 })
                             })
+                        })
                         })
                 })
         })

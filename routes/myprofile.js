@@ -35,6 +35,8 @@ function reformatGenres(data){
         username: user.username,
         user_id: user.userID,
         age: user.age,
+        lat: user.lat,
+        long: user.long,
         instrument: user.instrument,
         filtered_instruments: [user.filtered_instrument],
         bio: user.bio,
@@ -55,6 +57,7 @@ router.get('/', function(req, res) {
       .select('content.id as content_id', 'user_genre.genre_name as genre_name', 'content.user_id', 'content.content_url',
       'users.id as userID', 'users.bio','users.username',
       'users.age','users.instrument as instrument',
+      'users.lat', 'users.long',
       'filter_instrument.instrument as filtered_instrument')
       .where('users.id', req.user.id)
       .leftJoin('content', 'users.id', 'content.user_id')

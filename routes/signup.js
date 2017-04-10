@@ -14,11 +14,15 @@ router.post('/', (req, res, next) => {
                 if (user === undefined) {
                     req.body.password = protect.encrypt(req.body.password)
                         .then((data) => {
-                            console.log(data)
+                            // console.log(data)
+                            console.log(typeof req.body.lat)
+                            console.log("req dot body for me: ", req.body)
                             const newProfile = {
                                 username: req.body.username,
                                 email: req.body.email,
                                 instrument: req.body.instrument,
+                                lat: Number(req.body.lat),
+                                long: Number(req.body.long),
                                 password: data
                             };
                             profile.storeNewProfile(newProfile).then(id => {

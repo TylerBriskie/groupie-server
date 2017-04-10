@@ -11,7 +11,9 @@ module.exports = {
       email: newProfile.email,
       password: newProfile.password,
       username: newProfile.username,
-      instrument: newProfile.instrument
+      instrument: newProfile.instrument,
+      lat: newProfile.lat,
+      long: newProfile.long
     }).into('users').returning('id').then((id)=>{return id;});
   }
 
