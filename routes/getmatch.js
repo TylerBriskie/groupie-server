@@ -14,10 +14,7 @@ let myLocation = {
 
 
 function getDistanceToMatch(lat1,lon1,lat2,lon2) {
-
-  console.log("calculating distance between: ",lat1, ', ', lon1, ' and ', lat2, ', ', lon2)
   var R = 6371; // Radius of the earth in km
-  console.log("long 2 - long 1: ", lon2-lon1)
   var dLat = deg2rad(lat2-lat1);  // deg2rad below
   var dLon = deg2rad(lon2-lon1);
   var a =
@@ -27,7 +24,7 @@ function getDistanceToMatch(lat1,lon1,lat2,lon2) {
     ;
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   var d = R * c; // Distance in km
-  return d;
+  return (Math.round(d * 0.621371));
 }
 
 function deg2rad(deg) {
@@ -36,28 +33,36 @@ function deg2rad(deg) {
 
 
 
-function reformatMatches(data) {
+function reformatMatches(data, distance) {
     const reformatted = [];
     const usersById = {};
+    console.log("Reformatting matches, distance filter: ", distance)
+    if (distance == 300){
+      distance = 1000000
+      console.log("Setting Range to Max Distance... ", distance)
+    }
     data.forEach(user => {
-        if (usersById[user.user_id]) {
-            usersById[user.user_id].genres.push(user.genre_name)
-        } else {
-          getDistanceToMatch(user.matchLat, user.matchLong, myLocation.lat, myLocation.long)
-            usersById[user.user_id] = {
-                username: user.username,
-                user_id: user.user_id,
-                age: user.age,
-                instrument: user.instrument,
-                video: user.is_video,
-                bio: user.bio,
-                email: user.email,
-                content: user.content_url,
-                distance: getDistanceToMatch(user.matchLat, user.matchLong, myLocation.lat, myLocation.long),
-                genres: [user.genre_name]
-            };
-            reformatted.push(usersById[user.user_id])
+      let howFar = getDistanceToMatch(user.matchLat, user.matchLong, myLocation.lat, myLocation.long)
+        if (howFar < distance){
+          if (usersById[user.user_id]) {
+              usersById[user.user_id].genres.push(user.genre_name)
+          } else {
+              usersById[user.user_id] = {
+                  username: user.username,
+                  user_id: user.user_id,
+                  age: user.age,
+                  instrument: user.instrument,
+                  video: user.is_video,
+                  bio: user.bio,
+                  email: user.email,
+                  content: user.content_url,
+                  distance: howFar,
+                  genres: [user.genre_name]
+              };
+              reformatted.push(usersById[user.user_id])
+          }
         }
+
     })
     return reformatted;
 }
@@ -67,7 +72,7 @@ router.get('/random/content', function(req, res, next) {
     let myGenres = [];
     let myInstrumentFilters = [];
     let randomMatch = {};
-
+    let distanceFilter = req.query.sortDistance;
     knex.from('filter_instrument')
         .select('filter_instrument.instrument as instrument')
         .where('filter_instrument.user_id', req.user.id)
@@ -144,12 +149,13 @@ router.get('/random/content', function(req, res, next) {
                                   console.log("Sorting By Genre Filters...")
                                 }
 
+
                                 // myQuery.debug(true);
 
                                 myQuery.then(content => {
 
                                     // console.log("content: ",content);
-                                    const reformatted = reformatMatches(content)
+                                    const reformatted = reformatMatches(content, distanceFilter)
                                     let x = Math.floor(Math.random() * (reformatted.length))
                                     console.log("reformatted:", reformatted[x])
                                     return reformatted[x];

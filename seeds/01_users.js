@@ -11,8 +11,8 @@ exports.seed = function(knex, Promise) {
           password: "$2a$10$ScgD/c.6i1mPjgYuJts2I.BvMIUJ6TZ.in/GJ1yhG3GY0P4BcGxq2",
           age: 22,
           instrument: "Guitar",
-          lat: 39.9205,
-          long: -105.0867,
+          lat: 37.3382,
+          long: -121.8863,
           bio: "My name is Marty and I love to shred!  Hit me up if you wanna start a metal band."
         },
         {
