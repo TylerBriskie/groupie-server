@@ -19,7 +19,7 @@ var protect = require('../db/encryption.js')
 // });
 //
 
-function reformatGenres(data){
+function reformatProfile(data){
   const reformatted = [];
   const usersById = {};
   // console.log("reformatting data: ", data);
@@ -66,7 +66,7 @@ router.get('/', function(req, res) {
       .then(content=>{
         console.log("content from join:", content)
         // if (content.length>1){
-          const reformatted = reformatGenres(content)
+          const reformatted = reformatProfile(content)
           // console.log("Reformatted: ", reformatted)
           res.send(reformatted[0]);
         // } else {
