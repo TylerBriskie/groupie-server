@@ -82,6 +82,11 @@ router.get('/', function(req, res) {
     }
 });
 
+  // router.get('/myconnections', function(req,res,next){
+  //   console.log("getting my connections")
+  //   return knex('users').where('user_id')
+  // })
+
   router.post('/updateContent', function(req,res,next){
     console.log("updating content for profile ", req.user.id)
     console.log(req.body.content_url)
